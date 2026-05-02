@@ -12,7 +12,7 @@ export class CozeVideoProvider implements VideoProvider {
   async create(input: GenerationInput): Promise<GenerationJob> {
     const userPrompt = `Product Image: ${input.productImageUrl || "Not provided"}\nVideo Prompt: ${input.videoPrompt}`;
     
-    const chat = await coze.chat.createAndPoll({
+    const chatResponse = await coze.chat.createAndPoll({
       bot_id: VIDEO_BOT_ID,
       additional_messages: [
         {
@@ -23,9 +23,9 @@ export class CozeVideoProvider implements VideoProvider {
       ],
     });
 
-    if (chat.status === ChatStatus.COMPLETED) {
+    if (chatResponse.chat.status === ChatStatus.COMPLETED) {
       // Find the last message from assistant
-      const messages = await coze.chat.messages.list(chat.conversation_id, chat.id);
+      const messages = await coze.chat.messages.list(chatResponse.chat.conversation_id, chatResponse.chat.id);
       const lastMsg = messages.find(m => m.role === RoleType.Assistant && m.type === 'answer');
       
       // Extract URL from message (simple regex for now)
@@ -33,7 +33,7 @@ export class CozeVideoProvider implements VideoProvider {
       
       return {
         provider: this.name,
-        providerJobId: chat.id,
+        providerJobId: chatResponse.chat.id,
         status: "succeeded",
         outputUrl: urlMatch?.[0] || "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4", // Fallback for testing
         costUsd: 0,
@@ -42,7 +42,7 @@ export class CozeVideoProvider implements VideoProvider {
 
     return {
       provider: this.name,
-      providerJobId: chat.id,
+      providerJobId: chatResponse.chat.id,
       status: "queued",
       costUsd: 0,
     };

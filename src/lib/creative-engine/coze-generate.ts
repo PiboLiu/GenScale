@@ -7,7 +7,7 @@ export async function generateCozeCreativePackage(
 ): Promise<CreativePackage> {
   const userPrompt = JSON.stringify(productInput);
   
-  const chat = await coze.chat.createAndPoll({
+  const chatResponse = await coze.chat.createAndPoll({
     bot_id: CREATIVE_BOT_ID,
     additional_messages: [
       {
@@ -18,8 +18,8 @@ export async function generateCozeCreativePackage(
     ],
   });
 
-  if (chat.status === ChatStatus.COMPLETED) {
-    const messages = await coze.chat.messages.list(chat.conversation_id, chat.id);
+  if (chatResponse.chat.status === ChatStatus.COMPLETED) {
+    const messages = await coze.chat.messages.list(chatResponse.chat.conversation_id, chatResponse.chat.id);
     const lastMsg = messages.find(m => m.role === RoleType.Assistant && m.type === 'answer');
     
     if (lastMsg) {
