@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 // The client-side supabase client for code exchange
-import { createBrowserClient } from '@/lib/supabase/client'
+import { createServerSupabase } from '@/lib/supabase/server'
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
@@ -9,7 +9,7 @@ export async function GET(request: Request) {
   const next = searchParams.get('next') ?? '/'
 
   if (code) {
-    const supabase = await createBrowserClient()
+    const supabase = await createServerSupabase()
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
       return NextResponse.redirect(`${origin}${next}`)

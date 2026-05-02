@@ -3,7 +3,7 @@ import { generateCozeCreativePackage } from "@/lib/creative-engine/coze-generate
 import type { ProductInput } from "@/lib/creative-engine/schema";
 import { trackServerEvent } from "@/lib/analytics/events";
 import { checkRateLimit } from "@/lib/rate-limit";
-import { supabaseAdmin } from "@/lib/supabase/client";
+import { getSupabaseAdmin } from "@/lib/supabase/client";
 
 function normalizeProductInput(body: Partial<ProductInput>): ProductInput {
   return {
@@ -21,7 +21,9 @@ function normalizeProductInput(body: Partial<ProductInput>): ProductInput {
 }
 
 export async function POST(request: NextRequest) {
-  const ip = request.headers.get("x-forwarded-for") ?? "local";
+  const supabaseAdmin = getSupabaseAdmin();
+  const ip = request.headers.get("x-forwarded-for") || "127.0.0.1";
+
 
   if (!checkRateLimit(`creative:${ip}`, 30)) {
     return NextResponse.json({ error: "Too many requests." }, { status: 429 });

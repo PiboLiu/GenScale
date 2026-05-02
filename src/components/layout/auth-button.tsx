@@ -1,19 +1,15 @@
 'use client'
 
-import { createClient } from '@supabase/supabase-js'
+import { getSupabase } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
 
 export function AuthButton() {
   const [profile, setProfile] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
+  const supabase = getSupabase()
 
   useEffect(() => {
     const getData = async () => {

@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import { supabaseAdmin } from "@/lib/supabase/client";
+import { getSupabaseAdmin } from "@/lib/supabase/client";
 
 export async function POST(request: Request) {
+  const supabaseAdmin = getSupabaseAdmin();
   const formData = await request.formData();
   const file = formData.get("image");
 

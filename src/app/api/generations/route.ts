@@ -2,13 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { trackServerEvent } from "@/lib/analytics/events";
 import { CozeVideoProvider } from "@/lib/providers/coze-video-provider";
 import { checkRateLimit } from "@/lib/rate-limit";
-import { supabaseAdmin } from "@/lib/supabase/client";
+import { getSupabaseAdmin } from "@/lib/supabase/client";
 import type { Generation } from "@/lib/creative-engine/schema";
 
 const provider = new CozeVideoProvider();
 
 export async function POST(request: NextRequest) {
   const ip = request.headers.get("x-forwarded-for") ?? "local";
+  const supabaseAdmin = getSupabaseAdmin();
 
   if (!checkRateLimit(`generation:${ip}`, 10)) {
     return NextResponse.json({ error: "Too many generation requests." }, { status: 429 });

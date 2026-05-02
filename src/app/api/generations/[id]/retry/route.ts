@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { CozeVideoProvider } from "@/lib/providers/coze-video-provider";
-import { supabaseAdmin } from "@/lib/supabase/client";
+import { getSupabaseAdmin } from "@/lib/supabase/client";
 
 const provider = new CozeVideoProvider();
 
@@ -9,6 +9,7 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
+  const supabaseAdmin = getSupabaseAdmin();
 
   // 1. Fetch previous generation with relations
   const { data: previous, error: pError } = await supabaseAdmin
