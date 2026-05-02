@@ -1,6 +1,6 @@
 import { coze, CREATIVE_BOT_ID } from "../providers/coze-client";
 import type { CreativePackage, ProductInput } from "./schema";
-import { ChatStatus } from "@coze/api";
+import { ChatStatus, RoleType } from "@coze/api";
 
 export async function generateCozeCreativePackage(
   productInput: ProductInput,
@@ -11,7 +11,7 @@ export async function generateCozeCreativePackage(
     bot_id: CREATIVE_BOT_ID,
     additional_messages: [
       {
-        role: "user",
+        role: RoleType.User,
         content: userPrompt,
         content_type: "text",
       },
@@ -20,7 +20,7 @@ export async function generateCozeCreativePackage(
 
   if (chat.status === ChatStatus.COMPLETED) {
     const messages = await coze.chat.messages.list(chat.conversation_id, chat.id);
-    const lastMsg = messages.find(m => m.role === 'assistant' && m.type === 'answer');
+    const lastMsg = messages.find(m => m.role === RoleType.Assistant && m.type === 'answer');
     
     if (lastMsg) {
       try {

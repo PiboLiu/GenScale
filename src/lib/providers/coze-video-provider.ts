@@ -4,7 +4,7 @@ import type {
   GenerationJob,
   VideoProvider,
 } from "./video-provider";
-import { ChatStatus } from "@coze/api";
+import { ChatStatus, RoleType } from "@coze/api";
 
 export class CozeVideoProvider implements VideoProvider {
   name = "coze-video-provider";
@@ -16,7 +16,7 @@ export class CozeVideoProvider implements VideoProvider {
       bot_id: VIDEO_BOT_ID,
       additional_messages: [
         {
-          role: "user",
+          role: RoleType.User,
           content: userPrompt,
           content_type: "text",
         },
@@ -26,7 +26,7 @@ export class CozeVideoProvider implements VideoProvider {
     if (chat.status === ChatStatus.COMPLETED) {
       // Find the last message from assistant
       const messages = await coze.chat.messages.list(chat.conversation_id, chat.id);
-      const lastMsg = messages.find(m => m.role === 'assistant' && m.type === 'answer');
+      const lastMsg = messages.find(m => m.role === RoleType.Assistant && m.type === 'answer');
       
       // Extract URL from message (simple regex for now)
       const urlMatch = lastMsg?.content.match(/https?:\/\/[^\s)]+\.mp4[^\s)]*/);
