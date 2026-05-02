@@ -35,12 +35,14 @@ Transitioned from a virtual try-on tool (FitMirror) to a specialized **AI Produc
 - [x] **User Identity**: Integrated Supabase Auth (Google OAuth) with automatic profile creation.
 - [x] **Credits System**: Initial 10-credit grant for new users.
 - [x] **Domain**: Purchased `genscale.xyz` (Spaceship).
+- [x] **Deployment**: Production deployment to Vercel successful.
+- [x] **Landing Page**: Implemented high-conversion "7-section" layout.
 
 ## 4. Gap Analysis (vs. Roadmap Phase 1 & 2)
-- [ ] **Deployment**: Configure DNS and Vercel production environment.
-- [ ] **Payment**: Integrate Creem.io for credit purchases.
-- [ ] **Landing Page**: Implement the high-conversion "7-section" layout.
-- [ ] **SEO Content**: Populate pages with actual keywords.
+- [ ] **Credit Consumption**: Deduct 1 credit per video generation job.
+- [ ] **Asset Management**: User dashboard to view and download history.
+- [ ] **Payment**: Integrate Creem.io checkout links.
+- [ ] **SEO Content**: Populate pages with actual keywords and `sitemap.ts`.
 
 ## 5. Phase 3: Launch Readiness Plan
 1. **User Identity**: Integrate Supabase Auth (Google) to track generations per user.

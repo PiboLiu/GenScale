@@ -3,6 +3,7 @@ import { trackServerEvent } from "@/lib/analytics/events";
 import { CozeVideoProvider } from "@/lib/providers/coze-video-provider";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { getSupabaseAdmin } from "@/lib/supabase/client";
+import { deductCredit } from "@/lib/rate-limit/credits";
 import type { Generation } from "@/lib/creative-engine/schema";
 
 const provider = new CozeVideoProvider();
@@ -13,6 +14,21 @@ export async function POST(request: NextRequest) {
 
   if (!supabaseAdmin) {
     return NextResponse.json({ error: "Configuration missing" }, { status: 500 });
+  }
+
+  // 0. Get User from Session (Mandatory for credits)
+  const { data: { user } } = await supabaseAdmin.auth.getUser(
+    request.headers.get("Authorization")?.split("Bearer ")[1] || ""
+  );
+
+  if (!user) {
+    return NextResponse.json({ error: "Please sign in to generate video." }, { status: 401 });
+  }
+
+  // 0b. Deduct 1 Credit
+  const creditResult = await deductCredit(user.id);
+  if (!creditResult.success) {
+    return NextResponse.json({ error: creditResult.error }, { status: 403 });
   }
 
   if (!checkRateLimit(`generation:${ip}`, 10)) {
