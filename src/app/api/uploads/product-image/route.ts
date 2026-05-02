@@ -23,6 +23,10 @@ export async function POST(request: Request) {
   const filePath = `product-images/${fileName}`;
 
   // Upload to Supabase Storage
+  if (!supabaseAdmin) {
+    return NextResponse.json({ error: "Configuration missing" }, { status: 500 });
+  }
+
   const { data: storageData, error: storageError } = await supabaseAdmin.storage
     .from("product-ad-media")
     .upload(filePath, file);
@@ -33,9 +37,11 @@ export async function POST(request: Request) {
 
   // Record asset in a generic way (we use the storage path as assetId for now)
   // or return a signed URL/public URL
-  const { data: { publicUrl } } = supabaseAdmin.storage
+  const publicUrlResponse = supabaseAdmin.storage
     .from("product-ad-media")
     .getPublicUrl(filePath);
+
+  const publicUrl = publicUrlResponse.data.publicUrl;
 
   return NextResponse.json({
     assetId: crypto.randomUUID(), // For DB reference
