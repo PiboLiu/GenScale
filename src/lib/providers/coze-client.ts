@@ -1,4 +1,4 @@
-import { CozeAPI, COZE_CN_BASE_URL } from "@coze/api";
+import { CozeAPI, COZE_CN_BASE_URL, getJWTToken } from "@coze/api";
 
 const clientId = process.env.COZE_CLIENT_ID;
 const publicKeyId = process.env.COZE_PUBLIC_KEY_ID;
@@ -10,11 +10,14 @@ if (!clientId || !publicKeyId || !privateKey) {
 
 export const coze = new CozeAPI({
   baseURL: process.env.COZE_API_BASE || COZE_CN_BASE_URL,
-  auth: {
-    type: "jwt",
-    clientId: clientId || "",
-    publicKeyId: publicKeyId || "",
-    privateKey: privateKey || "",
+  token: async () => {
+    const tokenData = await getJWTToken({
+      appId: clientId || "",
+      aud: "api.coze.cn",
+      keyid: publicKeyId || "",
+      privateKey: privateKey || "",
+    });
+    return tokenData.access_token;
   },
 });
 
