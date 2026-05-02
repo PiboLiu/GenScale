@@ -11,6 +11,10 @@ export async function POST(request: NextRequest) {
   const ip = request.headers.get("x-forwarded-for") ?? "local";
   const supabaseAdmin = getSupabaseAdmin();
 
+  if (!supabaseAdmin) {
+    return NextResponse.json({ error: "Configuration missing" }, { status: 500 });
+  }
+
   if (!checkRateLimit(`generation:${ip}`, 10)) {
     return NextResponse.json({ error: "Too many generation requests." }, { status: 429 });
   }

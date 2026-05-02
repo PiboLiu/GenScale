@@ -22,6 +22,9 @@ function normalizeProductInput(body: Partial<ProductInput>): ProductInput {
 
 export async function POST(request: NextRequest) {
   const supabaseAdmin = getSupabaseAdmin();
+  if (!supabaseAdmin) {
+    return NextResponse.json({ error: "Configuration missing" }, { status: 500 });
+  }
   const ip = request.headers.get("x-forwarded-for") || "127.0.0.1";
 
 

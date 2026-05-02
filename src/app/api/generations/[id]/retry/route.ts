@@ -10,6 +10,9 @@ export async function POST(
 ) {
   const { id } = await params;
   const supabaseAdmin = getSupabaseAdmin();
+  if (!supabaseAdmin) {
+    return NextResponse.json({ error: "Configuration missing" }, { status: 500 });
+  }
 
   // 1. Fetch previous generation with relations
   const { data: previous, error: pError } = await supabaseAdmin

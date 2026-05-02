@@ -11,6 +11,9 @@ export async function GET(
 ) {
   const { id } = await params;
   const supabaseAdmin = getSupabaseAdmin();
+  if (!supabaseAdmin) {
+    return NextResponse.json({ error: "Configuration missing" }, { status: 500 });
+  }
   
   // 1. Fetch generation with relations from Supabase
   const { data: generation, error: gError } = await supabaseAdmin

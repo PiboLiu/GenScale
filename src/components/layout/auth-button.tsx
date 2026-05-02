@@ -12,6 +12,11 @@ export function AuthButton() {
   const supabase = getSupabase()
 
   useEffect(() => {
+    if (!supabase) {
+      setLoading(false)
+      return
+    }
+
     const getData = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
@@ -44,9 +49,10 @@ export function AuthButton() {
     return () => {
       authListener.subscription.unsubscribe()
     }
-  }, [])
+  }, [supabase])
 
   const handleLogin = async () => {
+    if (!supabase) return
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
@@ -56,11 +62,12 @@ export function AuthButton() {
   }
 
   const handleLogout = async () => {
+    if (!supabase) return
     await supabase.auth.signOut()
     router.refresh()
   }
 
-  if (loading) return <div className="h-9 w-20 animate-pulse rounded bg-zinc-200" />
+  if (!supabase || loading) return <div className="h-9 w-20 animate-pulse rounded bg-zinc-200" />
 
   if (profile) {
     return (
